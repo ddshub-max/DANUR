@@ -12,7 +12,7 @@ local MinimizeBtn = Instance.new("TextButton")
 local OpenBtn = Instance.new("TextButton")
 
 -- [ SETUP SCREEN GUI ] --
-ScreenGui.Name = "DanurLoader_Dynamic"
+ScreenGui.Name = "DanurLoader_Final_V4"
 ScreenGui.Parent = game.CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -61,7 +61,7 @@ RightPanel.Size = UDim2.new(0.75, 0, 1, 0)
 
 Title.Parent = RightPanel
 Title.Size = UDim2.new(1, 0, 0.12, 0)
-Title.Text = "CHAPTER 1" -- Judul Default
+Title.Text = "CHAPTER 1"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextScaled = true
 Title.Font = Enum.Font.SourceSansBold
@@ -97,7 +97,7 @@ NextStatus.Text = "Next Step: Choose Step"
 NextStatus.TextColor3 = Color3.fromRGB(200, 200, 200)
 NextStatus.TextScaled = true
 
--- [ DATA LINK MANUAL ] --
+-- [ DATA LINK LENGKAP ] --
 local Data = {
     ["Cap 1"] = {
         "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/step1.lua",
@@ -115,9 +115,13 @@ local Data = {
         "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A3.lua",
         "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A4.lua",
         "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A5.lua",
-        "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A6.lua",
+        "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A5.1.lua",
+        "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A6.lua"
+    },
+    ["Cap 3"] = {
         "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A7.lua",
-        "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A8.lua"
+        "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A8.lua",
+        "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/last.lua" -- Step Akhir Tambahan
     }
 }
 
@@ -128,16 +132,18 @@ local function clearButtons()
     end
 end
 
-local function createStepButtons(chapterName)
+local function createStepButtons(chapterKey)
     clearButtons()
-    -- Ganti Judul UI Secara Otomatis
-    if chapterName == "Cap 1" then
+    
+    if chapterKey == "Cap 1" then
         Title.Text = "CHAPTER 1"
-    else
+    elseif chapterKey == "Cap 2" then
         Title.Text = "CHAPTER 2"
+    elseif chapterKey == "Cap 3" then
+        Title.Text = "STEP FINISH"
     end
 
-    local links = Data[chapterName]
+    local links = Data[chapterKey]
     for i, url in ipairs(links) do
         local btn = Instance.new("TextButton")
         btn.Text = tostring(i)
@@ -152,11 +158,11 @@ local function createStepButtons(chapterName)
         corner.Parent = btn
 
         btn.MouseButton1Click:Connect(function()
-            CurrentStatus.Text = "In: " .. Title.Text .. " - " .. i
+            CurrentStatus.Text = "In: " .. Title.Text .. " - Step " .. i
             if i < #links then
                 NextStatus.Text = "Next: Step " .. (i + 1)
             else
-                NextStatus.Text = "Next: All Finished"
+                NextStatus.Text = "Next: End of Project"
             end
             
             task.spawn(function()
@@ -166,8 +172,9 @@ local function createStepButtons(chapterName)
     end
 end
 
--- [ CHAPTER TABS ] --
-for _, name in pairs({"Cap 1", "Cap 2"}) do
+-- [ TABS CREATION ] --
+local chapterOrder = {"Cap 1", "Cap 2", "Cap 3"}
+for _, name in ipairs(chapterOrder) do
     local tab = Instance.new("TextButton")
     tab.Name = name
     tab.Parent = LeftPanel
