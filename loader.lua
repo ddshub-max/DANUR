@@ -12,7 +12,7 @@ local MinimizeBtn = Instance.new("TextButton")
 local OpenBtn = Instance.new("TextButton")
 
 -- [ SETUP SCREEN GUI ] --
-ScreenGui.Name = "DanurLoader_Final"
+ScreenGui.Name = "DanurLoader_Dynamic"
 ScreenGui.Parent = game.CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -35,7 +35,7 @@ MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 MainFrame.Position = UDim2.new(0.02, 0, 0.5, 0)
 MainFrame.AnchorPoint = Vector2.new(0, 0.5)
-MainFrame.Size = UDim2.new(0.35, 0, 0.5, 0) -- Scale UI
+MainFrame.Size = UDim2.new(0.35, 0, 0.5, 0)
 MainFrame.BorderSizePixel = 0
 
 local UICornerMain = Instance.new("UICorner")
@@ -61,13 +61,13 @@ RightPanel.Size = UDim2.new(0.75, 0, 1, 0)
 
 Title.Parent = RightPanel
 Title.Size = UDim2.new(1, 0, 0.12, 0)
-Title.Text = "DANUR LOADER"
+Title.Text = "CHAPTER 1" -- Judul Default
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextScaled = true
 Title.Font = Enum.Font.SourceSansBold
 Title.BackgroundTransparency = 1
 
--- [ BUTTON CONTAINER (Tempat Tombol Angka) ] --
+-- [ BUTTON CONTAINER ] --
 ButtonContainer.Parent = RightPanel
 ButtonContainer.Position = UDim2.new(0.05, 0, 0.15, 0)
 ButtonContainer.Size = UDim2.new(0.9, 0, 0.65, 0)
@@ -75,7 +75,7 @@ ButtonContainer.BackgroundTransparency = 1
 ButtonContainer.ScrollBarThickness = 3
 
 UIGridLayout.Parent = ButtonContainer
-UIGridLayout.CellSize = UDim2.new(0.18, 0, 0.12, 0) -- Tombol Pipih
+UIGridLayout.CellSize = UDim2.new(0.18, 0, 0.12, 0)
 UIGridLayout.CellPadding = UDim2.new(0.02, 0, 0.03, 0)
 
 -- [ STATUS BAR ] --
@@ -93,7 +93,7 @@ CurrentStatus.TextScaled = true
 NextStatus.Parent = StatusFrame
 NextStatus.Position = UDim2.new(0, 0, 0.5, 0)
 NextStatus.Size = UDim2.new(1, 0, 0.5, 0)
-NextStatus.Text = "Next Step: Choose Cap"
+NextStatus.Text = "Next Step: Choose Step"
 NextStatus.TextColor3 = Color3.fromRGB(200, 200, 200)
 NextStatus.TextScaled = true
 
@@ -130,6 +130,13 @@ end
 
 local function createStepButtons(chapterName)
     clearButtons()
+    -- Ganti Judul UI Secara Otomatis
+    if chapterName == "Cap 1" then
+        Title.Text = "CHAPTER 1"
+    else
+        Title.Text = "CHAPTER 2"
+    end
+
     local links = Data[chapterName]
     for i, url in ipairs(links) do
         local btn = Instance.new("TextButton")
@@ -145,11 +152,11 @@ local function createStepButtons(chapterName)
         corner.Parent = btn
 
         btn.MouseButton1Click:Connect(function()
-            CurrentStatus.Text = "In: " .. chapterName .. " - Step " .. i
+            CurrentStatus.Text = "In: " .. Title.Text .. " - " .. i
             if i < #links then
                 NextStatus.Text = "Next: Step " .. (i + 1)
             else
-                NextStatus.Text = "Next: Chapter Completed"
+                NextStatus.Text = "Next: All Finished"
             end
             
             task.spawn(function()
@@ -198,5 +205,5 @@ OpenBtn.MouseButton1Click:Connect(function()
     OpenBtn.Visible = false
 end)
 
--- Default Open Cap 1
+-- Default Start
 createStepButtons("Cap 1")
