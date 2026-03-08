@@ -1,4 +1,5 @@
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local root = character:WaitForChild("HumanoidRootPart")
@@ -17,15 +18,27 @@ local function safeFire(p)
     end
 end
 
+-- Fungsi Tween untuk jalan pelan
+local function tweenTo(targetCFrame)
+    local distance = (root.Position - targetCFrame.Position).Magnitude
+    local speed = 20 -- Kamu bisa ubah angka ini untuk mengatur kecepatan (semakin kecil semakin pelan)
+    local duration = distance / speed
+    
+    local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
+    local tween = TweenService:Create(root, info, {CFrame = targetCFrame})
+    
+    tween:Play()
+    tween.Completed:Wait() -- Tunggu sampai sampai di tujuan
+end
+
 local function scanBordighera()
-    print("🔍 Mencari Bordighera dengan Cooldown 3 Detik...")
+    print("🔍 Mencari Bordighera dengan Tween dan Cooldown 1 Detik...")
     
     local objects = workspace:GetChildren()
     local foundCount = 0
 
     for _, obj in pairs(objects) do
         if obj.Name == "Bordighera" then
-            -- Cari prompt di dalam model
             local prompt = obj:FindFirstChildWhichIsA("ProximityPrompt", true)
             
             -- HANYA proses jika prompt ada dan masih Enabled
@@ -33,33 +46,32 @@ local function scanBordighera()
                 foundCount = foundCount + 1
                 print("📍 Menuju Bordighera ke-" .. foundCount .. " (" .. obj.Name .. ")")
                 
-                -- Teleport ke model
-                root.CFrame = obj:GetPivot() * CFrame.new(0, 3, 0)
-                task.wait(0.5)
+                -- TWEEN ke lokasi (3 stud di atas objek agar tidak nyangkut di lantai)
+                local targetCF = obj:GetPivot() * CFrame.new(0, 3, 0)
+                tweenTo(targetCF)
+                
+                task.wait(0.3) -- Jeda singkat setelah sampai sebelum menembak
                 
                 -- LOOPING: Fokus pada satu Bordighera sampai kelar
                 while prompt and prompt.Parent and prompt.Enabled == true do
-                    print("⚡ Firing prompt... Menunggu cooldown 3 detik.")
+                    print("⚡ Firing prompt... Menunggu cooldown 1 detik.")
                     safeFire(prompt)
                     
-                    -- Cooldown 3 detik sesuai permintaan
-                    task.wait(3) 
+                    task.wait(1) -- Cooldown 1 detik sesuai permintaan
                     
-                    -- Cek ulang status setelah cooldown untuk mencegah race condition
+                    -- Verifikasi status setelah cooldown
                     if not prompt or not prompt.Parent or not prompt.Enabled then
                         break
                     end
                 end
                 
-                print("✅ Proximity mati atau objek hilang. Mencari Bordighera selanjutnya...")
+                print("✅ Selesai dengan " .. obj.Name)
             end
-            
-            -- Jeda kecil sebelum pindah ke pencarian objek berikutnya di loop besar
-            task.wait(0.1)
         end
     end
     
-    print("✨ Selesai. Total " .. foundCount .. " Bordighera diproses.")
+    print("✨ Seluruh proses Bordighera selesai!")
 end
 
 scanBordighera()
+
