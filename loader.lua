@@ -52,6 +52,18 @@ UIListLayout.Parent = LeftPanel
 UIListLayout.Padding = UDim.new(0.02, 0)
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
+-- [[ NEW: TIMER SETUP ]] --
+local TimerLabel = Instance.new("TextLabel")
+TimerLabel.Name = "RealTimeTimer"
+TimerLabel.Parent = LeftPanel
+TimerLabel.Size = UDim2.new(0.9, 0, 0.1, 0)
+TimerLabel.BackgroundTransparency = 1
+TimerLabel.Text = "00:00"
+TimerLabel.TextColor3 = Color3.fromRGB(255, 255, 100) -- Warna kuning cerah agar kontras
+TimerLabel.TextScaled = true
+TimerLabel.Font = Enum.Font.Code -- Font bergaya digital/kode
+TimerLabel.LayoutOrder = -1 -- Memastikan dia selalu paling atas sebelum Cap 1
+
 -- [ CONTENT AREA ] --
 RightPanel.Name = "RightPanel"
 RightPanel.Parent = MainFrame
@@ -121,7 +133,7 @@ local Data = {
     ["Cap 3"] = {
         "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A7.lua",
         "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/A8.lua",
-        "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/last.lua" -- Step Akhir Tambahan
+        "https://raw.githubusercontent.com/ddshub-max/DANUR/refs/heads/main/last.lua"
     }
 }
 
@@ -210,6 +222,17 @@ end)
 OpenBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = true
     OpenBtn.Visible = false
+end)
+
+-- [[ NEW: TIMER LOGIC ]] --
+task.spawn(function()
+    local startTime = os.time()
+    while task.wait(1) do
+        local diff = os.time() - startTime
+        local minutes = math.floor(diff / 60)
+        local seconds = diff % 60
+        TimerLabel.Text = string.format("%02d:%02d", minutes, seconds)
+    end
 end)
 
 -- Default Start
