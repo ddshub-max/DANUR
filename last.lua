@@ -63,7 +63,7 @@ local function scanBordighera()
             attempts = attempts + 1
             print("⚡ Firing " .. targetObj.Name .. " (Cek ke-" .. attempts .. ")")
             safeFire(targetPrompt)
-            task.wait(2) -- Cooldown 1 detik
+            task.wait(3) -- Cooldown 1 detik
 
             -- Double check status
             if not targetPrompt or not targetPrompt.Enabled then break end
