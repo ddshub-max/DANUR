@@ -20,7 +20,7 @@ end
 local function tweenTo(targetCFrame)
     local distance = (root.Position - targetCFrame.Position).Magnitude
     if distance < 1 then return end
-    local speed = 60 
+    local speed = 30 
     local duration = distance / speed
     local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
     local tween = TweenService:Create(root, info, {CFrame = targetCFrame})
@@ -63,7 +63,7 @@ local function scanBordighera()
             attempts = attempts + 1
             print("⚡ Firing " .. targetObj.Name .. " (Cek ke-" .. attempts .. ")")
             safeFire(targetPrompt)
-            task.wait(1) -- Cooldown 1 detik
+            task.wait(2) -- Cooldown 1 detik
 
             -- Double check status
             if not targetPrompt or not targetPrompt.Enabled then break end
