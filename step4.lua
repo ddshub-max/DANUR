@@ -24,7 +24,7 @@ end
 -- Fungsi Tween dengan Speed 60
 local function tweenTo(targetCFrame)
     local distance = (root.Position - targetCFrame.Position).Magnitude
-    local speed = 60 -- Sesuai permintaan: Speed 60
+    local speed = 300 -- Sesuai permintaan: Speed 60
     local duration = distance / speed
     
     local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
