@@ -18,52 +18,48 @@ local function safeFire(p)
 end
 
 local function scanBordighera()
-    print("🔍 Mencari semua Bordighera di Workspace...")
+    print("🔍 Mencari Bordighera dengan Cooldown 3 Detik...")
     
-    -- Mengambil semua objek langsung dari workspace
     local objects = workspace:GetChildren()
     local foundCount = 0
 
     for _, obj in pairs(objects) do
-        -- Cek apakah nama objek adalah "Bordighera"
         if obj.Name == "Bordighera" then
-            foundCount = foundCount + 1
-            print("📍 Menuju Bordighera ke-" .. foundCount)
-            
-            -- Teleport ke model
-            root.CFrame = obj:GetPivot() * CFrame.new(0, 3, 0)
-            task.wait(0.5)
-            
-            -- Cari prompt di dalam model tersebut (termasuk child-nya)
+            -- Cari prompt di dalam model
             local prompt = obj:FindFirstChildWhichIsA("ProximityPrompt", true)
             
-            if prompt then
-                -- LOOPING: Terus tekan sampai server set Enable = false
-                while prompt and prompt.Enabled == true do
-                    print("⚡ Firing prompt " .. obj.Name .. "...")
+            -- HANYA proses jika prompt ada dan masih Enabled
+            if prompt and prompt.Enabled == true then
+                foundCount = foundCount + 1
+                print("📍 Menuju Bordighera ke-" .. foundCount .. " (" .. obj.Name .. ")")
+                
+                -- Teleport ke model
+                root.CFrame = obj:GetPivot() * CFrame.new(0, 3, 0)
+                task.wait(0.5)
+                
+                -- LOOPING: Fokus pada satu Bordighera sampai kelar
+                while prompt and prompt.Parent and prompt.Enabled == true do
+                    print("⚡ Firing prompt... Menunggu cooldown 3 detik.")
                     safeFire(prompt)
                     
-                    -- Jeda agar server punya waktu untuk memproses dan mengirim balik status false
-                    task.wait(0.5) 
+                    -- Cooldown 3 detik sesuai permintaan
+                    task.wait(3) 
                     
-                    -- Proteksi jika objek tiba-tiba dihapus dari game
-                    if not prompt.Parent or not prompt:IsDescendantOf(workspace) then
+                    -- Cek ulang status setelah cooldown untuk mencegah race condition
+                    if not prompt or not prompt.Parent or not prompt.Enabled then
                         break
                     end
                 end
-                print("✅ Berhasil dinonaktifkan!")
-            else
-                warn("⚠️ Tidak ada prompt di model ini.")
+                
+                print("✅ Proximity mati atau objek hilang. Mencari Bordighera selanjutnya...")
             end
-            task.wait(0.2)
+            
+            -- Jeda kecil sebelum pindah ke pencarian objek berikutnya di loop besar
+            task.wait(0.1)
         end
     end
     
-    if foundCount == 0 then
-        warn("❌ Tidak ditemukan objek dengan nama 'Bordighera' di Workspace.")
-    else
-        print("✨ Selesai memproses " .. foundCount .. " Bordighera.")
-    end
+    print("✨ Selesai. Total " .. foundCount .. " Bordighera diproses.")
 end
 
 scanBordighera()
