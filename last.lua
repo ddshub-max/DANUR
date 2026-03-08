@@ -55,7 +55,7 @@ local function scanBordighera()
 
         print("📍 Menuju: " .. targetObj.Name)
         tweenTo(targetObj:GetPivot() * CFrame.new(0, 3, 0))
-        task.wait(0.3)
+        task.wait(1)
 
         -- Loop interaksi pada objek ini sampai mati
         local attempts = 0
