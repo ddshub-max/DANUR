@@ -21,7 +21,7 @@ end
 -- Fungsi Tween untuk jalan pelan
 local function tweenTo(targetCFrame)
     local distance = (root.Position - targetCFrame.Position).Magnitude
-    local speed = 20 -- Kamu bisa ubah angka ini untuk mengatur kecepatan (semakin kecil semakin pelan)
+    local speed = 50 -- Kamu bisa ubah angka ini untuk mengatur kecepatan (semakin kecil semakin pelan)
     local duration = distance / speed
     
     local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
